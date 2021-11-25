@@ -8,9 +8,9 @@ class BottomBar extends StatelessWidget {
       child: Container(
         height: 50,
         child: TabBar(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white60,
-          indicatorColor: Colors.transparent,
+          labelColor: Colors.white, //현재 탭의 탭바 요소의 색
+          unselectedLabelColor: Colors.white60, //현재 탭이 아닌 탭바 요소의 색
+          indicatorColor: Colors.transparent, //탭 표시줄에서 선택한 탭 표시기의 색
           tabs: <Widget>[
             tabMaker(Icons.home, "홈"),
             tabMaker(Icons.search, "검색"),
@@ -28,6 +28,7 @@ class BottomBar extends StatelessWidget {
       child: Text(
         iconTitle,
         style: TextStyle(fontSize: 6),
+        textAlign: TextAlign.center,
       ),
     );
   }
