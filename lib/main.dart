@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:netflixclone/widget/bottom_bar.dart';
 import 'package:netflixclone/screen/home_screen.dart';
+import 'package:netflixclone/screen/more_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -35,7 +36,7 @@ class _MyAppState extends State<MyApp> {
               HomeScreen(),
               TabBarItemContainerMaker("search"),
               TabBarItemContainerMaker("save"),
-              TabBarItemContainerMaker("more"),
+              MoreScreen(),
             ],
           ),
           //탭바제작
@@ -53,10 +54,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-
-/*
-배워야 될 부분
-- DefaultTabController
-- TabBarView physics 요소
-*/
