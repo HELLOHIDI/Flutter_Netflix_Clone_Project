@@ -9,6 +9,7 @@ class MoreScreen extends StatelessWidget {
       child: Center(
         child: Column(
           children: <Widget>[
+            // 프로필 사진
             Container(
               padding: EdgeInsets.only(top: 50),
               child: CircleAvatar(
@@ -16,6 +17,7 @@ class MoreScreen extends StatelessWidget {
                 backgroundImage: AssetImage('images/bbongflix_logo.png'),
               ),
             ),
+            // 사용자 닉네임
             Container(
               padding: EdgeInsets.only(top: 15),
               child: Text(
@@ -27,14 +29,18 @@ class MoreScreen extends StatelessWidget {
                 ),
               ),
             ),
+            // 밑줄
             Container(
               padding: EdgeInsets.all(10),
               width: 140,
               height: 5,
               color: Colors.red,
             ),
+            // 하이퍼링크
             Container(
               padding: EdgeInsets.all(10),
+              // Linkify : 실제 클릭 가능한 주소를 만들어주는 패키지
+              // url_lounch : 링크를 열어주는 패키지
               child: Linkify(
                 onOpen: (link) async {
                   if (await canLaunch(link.url)) {
