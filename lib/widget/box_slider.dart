@@ -58,6 +58,5 @@ List<Widget> makeBoxImages(BuildContext context, List<Movie> movies) {
       ),
     );
   }
-
   return results;
 }
