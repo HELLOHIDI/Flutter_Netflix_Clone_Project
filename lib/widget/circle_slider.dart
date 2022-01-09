@@ -54,7 +54,7 @@ List<Widget> makeCircleImages(BuildContext context, List<Movie> movies) {
           padding: EdgeInsets.only(right: 10),
           alignment: Alignment.centerLeft,
           child: CircleAvatar(
-            backgroundImage: NetworkImage(movies[i].poster),
+            backgroundImage: NetworkImage(movies[i].poster), //firebase와 이미지 연동 (.Asset -> .Network)
             radius: 48,
           ),
         ),
