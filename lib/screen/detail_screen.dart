@@ -153,9 +153,13 @@ class _DetailScreenState extends State<DetailScreen> {
     return Container(
       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
       child: InkWell(
-        onTap: () {
+        // 찜하기 기능 구현
+        onTap: () { 
+          //버튼을 누르면 likes의 값을 변경
           setState(() {
             like = !like;
+            // firebase의 현재 likes 상태를 업데이트 시킴
+            //.updateData : data로 넘어온 특정 field의 값을 update한다.
             widget.movie.reference.updateData({
               'like': like
             });
