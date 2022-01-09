@@ -2,8 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:netflixclone/widget/bottom_bar.dart';
 import 'package:netflixclone/screen/home_screen.dart';
 import 'package:netflixclone/screen/more_screen.dart';
+import 'package:netflixclone/screen/search_screen.dart';
+import 'package:netflixclone/screen/like_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: "AIzaSyAmJXArzo8jgQGZVAhJdzrYtoOBchZ1VLU", // Your apiKey
+      appId: "1:348829866643:android:1d70085829f87239d1cb66", // Your appId
+      messagingSenderId: "348829866643", // Your messagingSenderId
+      projectId: "netflix-clone-test-eaabf", // Your projectId
+    ),
+  );
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
@@ -34,22 +48,14 @@ class _MyAppState extends State<MyApp> {
             children: [
               // 각각의 탭의 화면
               HomeScreen(),
-              TabBarItemContainerMaker("search"),
-              TabBarItemContainerMaker("save"),
+              SearchScreen(),
+              LikeScreen(),
               MoreScreen(),
             ],
           ),
           //탭바제작
           bottomNavigationBar: BottomBar(),
         ),
-      ),
-    );
-  }
-
-  TabBarItemContainerMaker(String tabBarTitle) {
-    return Container(
-      child: Center(
-        child: Text(tabBarTitle),
       ),
     );
   }
