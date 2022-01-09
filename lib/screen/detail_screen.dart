@@ -31,7 +31,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     width: double.maxFinite,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(widget.movie.poster),
+                        image: NetworkImage(widget.movie.poster), //firebase와 이미지 연동 (.Asset -> .Network)
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -48,7 +48,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 // 원본 이미지 중앙에 배치
                                 Container(
                                   padding: EdgeInsets.fromLTRB(0, 45, 0, 10),
-                                  child: Image.network(widget.movie.poster),
+                                  child: Image.network(widget.movie.poster), //firebase와 이미지 연동 (.asset -> .network)
                                   height: 300,
                                 ),
                                 describeText(),
