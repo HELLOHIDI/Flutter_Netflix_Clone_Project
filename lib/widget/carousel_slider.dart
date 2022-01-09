@@ -106,7 +106,8 @@ class _CarouselImageState extends State<CarouselImage> {
           //버튼을 누르면 likes의 값을 변경
           likes[_currentPage] = !likes[_currentPage];
           // firebase의 현재 likes 상태를 업데이트 시킴
-          movies[_currentPage].reference.updateData({
+          // .update :  data로 넘어온 특정 field의 값을 update한다.
+          movies[_currentPage].reference.update({
             'like': likes[_currentPage]
           });
         });
