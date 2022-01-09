@@ -52,7 +52,7 @@ List<Widget> makeBoxImages(BuildContext context, List<Movie> movies) {
           padding: EdgeInsets.only(right: 10),
           child: Align(
             alignment: Alignment.centerLeft, // 왼쪽 끝에 맞춰서 정렬
-            child: Image.network(movies[i].poster),
+            child: Image.network(movies[i].poster), //firebase와 이미지 연동 (.asset -> .network)
           ),
         ),
       ),
