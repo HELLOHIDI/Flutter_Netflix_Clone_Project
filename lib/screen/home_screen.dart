@@ -14,9 +14,6 @@ Query : 데이터베이스에게 특정한 데이터를 보여달라는 클라�
 QuerySnapshot : collection으로 부터 Query, snapshot을 통해 받아온 데이터 타입
                 사실상 Snapshot은 비동기로 실제 서버 데이터를 가져온 내용물이다.
                 Collection으로 부터 특정 Doucment들을 가져왔기에 하나씩 까봐야한다.
-
-
-
 */
 class _HomeScreenState extends State<HomeScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance; //Firestore 인스턴스 생성
