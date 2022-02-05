@@ -51,11 +51,11 @@ class _DetailScreenState extends State<DetailScreen> {
                                   child: Image.network(widget.movie.poster),
                                   height: 300,
                                 ),
-                                describeText(),
-                                titleText(),
-                                playButton(),
-                                movieText(),
-                                castText(),
+                                describeText(), // 설명텍스트
+                                titleText(), // 영화 제목 텍스트
+                                playButton(), // 재생버튼
+                                movieText(), // 영화제목, 키워드 소개
+                                castText(), // 출연자, 제작자 소개
                               ],
                             ),
                           ),
@@ -88,7 +88,8 @@ class _DetailScreenState extends State<DetailScreen> {
       ),
     );
   }
-
+  
+  // 설명텍스트
   Widget describeText() {
     return Container(
       padding: EdgeInsets.all(7),
@@ -99,7 +100,8 @@ class _DetailScreenState extends State<DetailScreen> {
       ),
     );
   }
-
+  
+  // 영화 제목 텍스트
   Widget titleText() {
     return Container(
       padding: EdgeInsets.all(7),
@@ -113,7 +115,8 @@ class _DetailScreenState extends State<DetailScreen> {
       ),
     );
   }
-
+  
+  // 재생버튼
   Widget playButton() {
     return Container(
       padding: EdgeInsets.all(3),
@@ -130,25 +133,28 @@ class _DetailScreenState extends State<DetailScreen> {
       ),
     );
   }
-
+  
+  // 영화제목, 키워드 소개
   Widget movieText() {
     return Container(
       padding: EdgeInsets.all(5),
       child: Text(widget.movie.toString()),
     );
   }
-
+  
+  // 출연자, 제작자 소개
   Widget castText() {
     return Container(
       padding: EdgeInsets.all(5),
       alignment: Alignment.centerLeft,
       child: Text(
-        '출연 : 현빈, 손예진, 서지혜\n제작자: 이정효, 박지은',
+        widget.movie.toOfficials(),
         style: TextStyle(color: Colors.white60, fontSize: 12),
       ),
     );
   }
 
+  // 찜하기 버튼
   Widget likeButton() {
     return Container(
       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -180,6 +186,7 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
+  // 평가하기 버튼
   Widget ratingButton() {
     return Container(
       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -201,7 +208,8 @@ class _DetailScreenState extends State<DetailScreen> {
       ),
     );
   }
-
+  
+  // 공유버튼
   Widget shareButton() {
     return Container(
       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
