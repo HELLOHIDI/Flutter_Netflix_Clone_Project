@@ -133,10 +133,9 @@
 Firebase의 DB라 볼 수 있는 firestore을 사용하였다. 이를 사용하기 위해서 cloud_firestoredhk firebase_core 패키지를 설치하였다.
 영화 더미 데이터들을 firebase 데이터베이스에 추가해두고 이를 활용하는 식으로 구현을 했다.<br/>
 
-------------------------------------------
+<h3>1-1. main.dart</h3>
 <pre>
-<code># main.dart
-
+<code>
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // --- ①
   await Firebase.initializeApp( // --- ②
@@ -181,8 +180,9 @@ void main() async {
 
 ------------------------------------------
 
+<h3>1-2. model_movie.dart</h3>
 <pre>
-<code># model_movie.dart
+<code> 
 import 'package:cloud_firestore/cloud_firestore.dart';
 class Movie { // --- ①
   final String title;
@@ -217,20 +217,20 @@ class Movie { // --- ①
  <summary> 🔍 자세히 분석하기 </summary>
  
  ### ① Movie class member variable & Movie.fromMap()
-     model_movie.dart 파일에 title,keyword, poster, like, actor, producer의 멤버변수를 설정
+     model_movie.dart 파일에 title,keyword, poster, like, actor, producer의 멤버변수를 설정하고,
      
-     Movie.fromMap()을 통해 named 생성자를 구현
+     Movie.fromMap()을 통해 named 생성자를 구현했다.
      
  ### ② final DocumentReference reference
-     실제 Firebase firestore에 있는 데이터 컬럼을 참조할 수 있는 링크
+     실제 Firebase firestore에 있는 데이터 컬럼을 참조할 수 있는 링크이고,
      
-     reference를 이용해 해당 데이터에 대한 CRUD 기능을 간단히 처리 가능
+     reference를 이용해 해당 데이터에 대한 CRUD 기능을 간단히 처리 가능하다.
 
  ### ③ fromsnapshot() 
-     named 생성자를 reference 멤버변수의 named 생성자를 구현
+     named 생성자를 reference 멤버변수의 named 생성자를 구현했다.
  
  ### ④ toString(), toOfficials()
-     각각 영화소개와 관계자 텍스트를 반환하는 메소드
+     각각 영화소개와 관계자 텍스트를 반환하는 메소드.
 
 </details>
 
@@ -239,31 +239,165 @@ class Movie { // --- ①
 **********************************************************************
 
  
+<h2> 2. home화면에 영화위젯 출력</h2>
+home screen에 firestore에 만들어놓은 영화 더미 데이터들을 출력하기 위해서 
+_fetchData() 함수에서 streamData로부터 데이터를 추출하고 _buildBody() 함수를 통해
+추출한 영화 더미 데이터를 실제 위젯으로 만들었다.
 
-<h2> 2. detail_screen 뒷화면 블러처리효과 </h2>
+<h3> 2.1 class _HomeScreenState extends State<HomeScreen> </h3>
+<pre>
+<code>
+class _HomeScreenState extends State<HomeScreen> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance; // --- ①
+  late Stream<QuerySnapshot> streamData; // --- ②
+  @override
+  void initState() {
+    super.initState();
+    streamData = firestore.collection('movie').snapshots(); // --- ③
+  }  
+</code>
+</pre>
+
+<details>
+<summary> 🔍 자세히 분석하기 </summary>
+
+### ① FirebaseFirestore.instance
+    FirebaseFirestore.instance 를 호출하여 인스턴스를 얻을 수 있다.
+
+### ② late Stream<QuerySnapshot> streamData
+    QuerySnapshot은 collection으로부터 Query, snapshot을 통해 받아온 데이터 타입으로서
+    
+    사실상 snapshot은 비동기(이기 때문에 late 사용) 로 실제 서버 데이터를 가져온 내용들이다.
+    
+    즉 Collection으로 부터 특정 Document들을 가져왔기에 하나씩 까봐야 한다. 
+    
+    
+
+### ③ firestore.collection('movie').snapshots();
+    FireStore에서는 2가지의 Read 방식이 존재한다
+    1. one-time Read : 한번 읽는 방식
+    2. Real-time Read : stream을 이용해 변경되는 사항을 Stream으로 넘겨주워
+    실시간 반영이 이루어진다. 
+    
+    Collection의 Stream을 받아서 전체 Documents의 변경 사항을 실시간으로 받을 수 있고
+    Document의 Stream을 받아서 하나의 Document의 변경 사항을 받을 수도 있다
+    
+    snapshots()은 real-time Read를 위한 Stream을 받아오는 함수이다.
+    
+    여기서 우리는 Collection 내에 저장되어 있는 모든 문서의 영화 데이터가 필요하기에 
+    컬렉션 이름인 movie의 데이터를 .collection.snapshots()으로 받았다.
+</details>
+
+<h3> 2-2. _fetchData() & _buildBody() </h3>
+<pre>
+<code>
+Widget _fetchData(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>( // --- ①
+      stream: FirebaseFirestore.instance.collection('movie').snapshots(),
+      builder: (context, snapshot) { // --- ②
+        if (!snapshot.hasData) return LinearProgressIndicator();
+        return _buildBody(context, snapshot.data!.docs); // --- ③
+      },
+    );
+  }
+  
+  Widget _buildBody(BuildContext context, List<DocumentSnapshot> snapshot) {
+    List<Movie> movies = snapshot.map((d) => Movie.fromSnapshot(d)).toList();
+    return ListView(
+      children: [
+        Stack(
+          children: [
+            CarouselImage(movies: movies),
+            TopBar(),
+          ],
+        ),
+        CircleSlider(movies: movies),
+        BoxSlider(movies: movies),
+      ],
+    );
+  }
+</code>
+</pre>
+
+<details>
+<summary> 🔍 자세히 분석하기 </summary>
+
+### ① StreamBuilder<QuerySnapshot>
+    Stream 과의 상호 작용에 대한 최신 스냅샷을 기반으로 자체적으로 빌드되는 위젯으로
+    받아온 Stream을 화면에 구성하기 위해 사용했다.
+    
+### ② builder part
+    직접적으로 빌드하는 part로서 데이터가 없으면 로딩화면, 있으면 _buildBody를 호출하여 실제 위젯을 만들어준다.
+
+### ③ snapshot.data!.docs
+    docs는 QuerySnapshot의 내부 데이터 리스트에 접근하는거로써
+    우리가 만들어둔 실제 영화 데이터를 모아둔 리스트에 접근하는 것이다.
+
+### ④ List<Movie> movies = snapshot.map((d) => Movie.fromSnapshot(d)).toList()
+    movies를 선언해 snapshot으로부터 데이터를 가져온다
+    
+    Movie.fromSnapshot() 메소드를 통해 데이터를 Movie모델의 형태로 바꿔주고,
+    
+    map을 통해 기존 snapshot(snapshot.data!.docs)을 기반으로 새로운 리스트를 생성해주고
+    
+    toList()를 통해 리스트로 선언해준다.
+
+</details>
+
+---------------------------------------------------------
+
+
+
+
+
 <h2> 3. search_screen의 검색한 영화 출력 </h2>
-<h2> 4. home화면에 영화위젯 </h2>
+
+
+
+
+
+<h2> 4. detail_screen 뒷화면 블러처리효과 </h2>
+
+
 
 
 
 <details>
  <summary> ❓ 모르는 개념 정리</summary>
- #### 바인딩(binding)
+ 
+ #### 바인딩(binding) (1-1 中 ① WidgetsFlutterBinding.ensureInitialized() part)
  : 프로그램에 사용된 구성 요소의 실제 값 또는 프로퍼티를 결정짓는 행위를 의미합니다. 예를 들어 함수를 호출하는 부분에서 실제 함수가 위치한 메모리를 연결
  
- #### FlutterFire CLI
+ #### FlutterFire CLI (1-1 中 ② Firebase.initializeApp() part)
  : 지원되는 모든 플랫폼에서 FlutterFire 설치 프로세스를 쉽게 하는 데 도움이 되는 명령을 제공하는 유용한 도구
  
- #### CRUD 기능
+ #### CRUD 기능 (1-2 中 ② final DocumentReference reference part)
  : Create(생성), Read(읽기), Update(갱신), Delete(삭제)
-</details>
 
 
+ #### Collection, Document (2-1 中 ② late Stream<QuerySnapshot> streamData part)
+ ![image](https://user-images.githubusercontent.com/54922625/152805013-ab9a2658-9a9f-411f-93dc-8c95466dc451.png)
+ 
+     1. Collection 안에 여러 개의 Document가 있고 그 안에 Document를 채우는 field가 존재한다.
+     2. 즉 Collection으로 부터 특정 Document들을 가져왔기에 하나씩 까봐야 한다. 
+     => 이 말은 movie라는 큰 틀에서 가져왔기 때문에 각각의 문서들을 확인해봐야 한다는 맥락이 이렇게 이해되는 것이다.
+ 
+ #### stream (2-1 中 ② late Stream<QuerySnapshot> streamData)
+     스트림은 데이터의 추가나 변경이 일어나면 이를 관찰하던데서 처리하는 방법
+     => 비동기일 때 사용 (일단 이 정도 알고 넘어가고 추후 자세히 공부할 것)
+
+ #### Query (2-1 中 ② late Stream<QuerySnapshot> streamData)
+ : 데이터베이스에게 특정한 데이터를 보여달라는 클라이언트의 요청
+ </details>
 
 # 기술 스택 (Technique Used)
+
+# 배운점
+- stream에 대해서 더욱 자세히 공부해보자
 
 # 참고 사이트
 https://changjoopark.medium.com/flutter-main-%EB%A9%94%EC%86%8C%EB%93%9C%EC%97%90%EC%84%9C-%EB%B9%84%EB%8F%99%EA%B8%B0-%EB%A9%94%EC%86%8C%EB%93%9C-%EC%82%AC%EC%9A%A9%EC%8B%9C-%EB%B0%98%EB%93%9C%EC%8B%9C-%EC%B6%94%EA%B0%80%ED%95%B4%EC%95%BC%ED%95%98%EB%8A%94-%ED%95%9C%EC%A4%84-728705061375 : [Flutter] main 메소드에서 비동기 메소드 사용시 반드시 추가해야하는 한줄
 
+https://funncy.github.io/flutter/2021/03/06/firestore/ : 
 
 
