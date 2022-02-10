@@ -34,11 +34,8 @@
  </tr>
 </table>
   
-
-
-
-
-
+  
+  
 # Using Packages
 |package|ver.|function|
 |---|---|------|
@@ -151,6 +148,7 @@ void main() async {
 </code>
 </pre>
 
+
 <details>
  <summary> 🔍 자세히 분석하기 </summary>
 
@@ -234,11 +232,8 @@ class Movie { // --- ①
 
 </details>
 
-
-
 **********************************************************************
 
- 
 <h2> 2. home화면에 영화위젯 출력</h2>
 home screen에 firestore에 만들어놓은 영화 더미 데이터들을 출력하기 위해서 
 _fetchData() 함수에서 streamData로부터 데이터를 추출하고 _buildBody() 함수를 통해
@@ -258,6 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
 </code>
 </pre>
 
+
 <details>
 <summary> 🔍 자세히 분석하기 </summary>
 
@@ -271,8 +267,6 @@ class _HomeScreenState extends State<HomeScreen> {
     
     즉 Collection으로 부터 특정 Document들을 가져왔기에 하나씩 까봐야 한다. 
     
-    
-
 ### ③ firestore.collection('movie').snapshots();
     FireStore에서는 2가지의 Read 방식이 존재한다
     1. one-time Read : 한번 읽는 방식
@@ -319,6 +313,7 @@ Widget _fetchData(BuildContext context) {
 </code>
 </pre>
 
+
 <details>
 <summary> 🔍 자세히 분석하기 </summary>
 
@@ -347,18 +342,120 @@ Widget _fetchData(BuildContext context) {
 ---------------------------------------------------------
 
 
+<h2> 3. search_screen의 검색한 영화 출력 & like_screen의 찜한 영화 출력 </h2>
+
+<h3> 3-1. search_screen.dart</h3>
+<pre>
+<code>
+class _SearchScreenState extends State<SearchScreen> {
+  final TextEditingController _filter = TextEditingController(); // --- ①
+  FocusNode focusNode = FocusNode(); // --- ①
+  String _searchText = ""; // --- ①
+
+  _SearchScreenState() { // --- ②
+    _filter.addListener(() {
+      setState(() {
+        _searchText = _filter.text;
+      });
+    });
+  }
+  
+  Widget _buildBody(BuildContext context) //2-2-2의 _fetchData()와 같은 기능임으로 설명 생략
+  
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) { // --- ③
+    List<DocumentSnapshot> searchResults = [];
+    for (DocumentSnapshot d in snapshot) {
+      if (d.data().toString().contains(_searchText)) {
+        searchResults.add(d);
+      }
+    }
+
+    return Expanded( // --- ④
+      child: GridView.count(
+        crossAxisCount: 3, // 한 줄에 3개
+        childAspectRatio: 1 / 1.5, // 1/1.5 비율의 위젯을 만들어줌
+        padding: EdgeInsets.all(3),
+        children: searchResults.map((data) => _buildListItem(context, data)).toList(),
+      ),
+    );
+  }
+  
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data)
+  // 받아온 데이터를 기준으로 영화 모델로 변환하여 버튼 위젯으로 만드는 과정
+  // 버튼을 누르면 detail_screen으로 넘어감 (버튼은 각 포스터 사진을 자식으로 한 InkWell )
+</code>
+</pre>
+
+
+<details>
+ <summary> 🔍 자세히 분석하기 </summary>
+ 
+ ### ① _SearchScreenState 선언
+     _filter는 TextEditingController()로 검색 위젯을 컨트롤 하는 위젯이다.
+
+     focusNode는 현재 검색 위젯에 커서가 있는지에 대한 상태를 가지고 있는 위젯이다.
+
+     _searchText는 현재 입력되는 문자열을 나타낸다.
+ 
+ ### ② _SearchScreenState()
+     _filter.addListener()을 통해서 리스너를 등록하고
+     현재 문자열을 리스너의 텍스트 값으로 대입한다.
+ 
+ ### ③ _buildList()
+     _buildList()함수는 _buildListItem()함수에서 만든 검색어에 해당되는 영화 위젯 버튼을 넣어주는 테두리를 만드는 함수이다
+
+     searchResult는 searchText가 포함된 텍스트를 가진 영화들을 필터링해서 넣는 리스트이며,
+
+     내부 데이터 리스트를 돌면서 _searchText를 포함하고 있는 영화를 리스트에 추가해준다
+
+     이때 .data().toString()으로 형변환을 해주어서 문자열로 비교할 수 있도록 해준다.
+ 
+ 
+ ### ④ Expanded 위젯
+     GridView.count를 통해서 한줄에 3개 1:1.5 비율을 가지는 판을 제작해준다.
+     
+     이때 들어갈 아이템들은 searchResults에 해당되는 데이터들이며 
+     
+     각각의 영화 데이터를 _buildListItem()을 호출하여 위젯으로 제작한다.
+ 
+ 
+</details>
+
+<h3> 3-2. like_screen.dart</h3>
+
+<pre>
+<code>
+Widget _buildBody(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('movie').where('like', isEqualTo: true).snapshots(), --- ①
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return LinearProgressIndicator();
+        return _buildList(context, snapshot.data!.docs); 
+      },
+    );
+  }
+</code>
+</pre>
+
+
+<details>
+<summary> 🔍 자세히 분석하기 </summary>
+
+### ① stream part
+
+배열의 요소를 필터링 하기 위해 where함수를 사용했다.
+.where을 통해 like:true(isEqualTo: true)인 데이터를 가져오라는 쿼리를 보낼 수 있다.
+</details>
 
 
 
-<h2> 3. search_screen의 검색한 영화 출력 </h2>
+<h2> 5. detail_screen 뒷화면 블러처리효과 </h2>
 
+<pre>
+<code>
 
-
-
-
-<h2> 4. detail_screen 뒷화면 블러처리효과 </h2>
-
-
+</code>
+</pre>
 
 
 
@@ -382,12 +479,21 @@ Widget _fetchData(BuildContext context) {
      2. 즉 Collection으로 부터 특정 Document들을 가져왔기에 하나씩 까봐야 한다. 
      => 이 말은 movie라는 큰 틀에서 가져왔기 때문에 각각의 문서들을 확인해봐야 한다는 맥락이 이렇게 이해되는 것이다.
  
- #### stream (2-1 中 ② late Stream<QuerySnapshot> streamData)
+ #### stream (2-1 中 ② late Stream<QuerySnapshot> streamData part)
      스트림은 데이터의 추가나 변경이 일어나면 이를 관찰하던데서 처리하는 방법
      => 비동기일 때 사용 (일단 이 정도 알고 넘어가고 추후 자세히 공부할 것)
 
- #### Query (2-1 中 ② late Stream<QuerySnapshot> streamData)
+ #### Query (2-1 中 ② late Stream<QuerySnapshot> streamData part)
  : 데이터베이스에게 특정한 데이터를 보여달라는 클라이언트의 요청
+ 
+ #### Listener (3-1 中 ② _SearchScreenState() part)
+ 
+ 리스너는 비동기 기능을 실행할 때 활용하는 기법으로
+ 어떤 이벤트가 발생했을 때 실행되는 함수를 리스너라고 부른다
+ 
+ 예를 들어 사용자가 탭을 바꾸면 TabController의 addListener함수가 호출된다. 
+ 이를 이용해 사용자가 탭을 바꾸면 값이나 상태를 갱신할 수 있다.
+ 
  </details>
 
 # 기술 스택 (Technique Used)
@@ -399,5 +505,7 @@ Widget _fetchData(BuildContext context) {
 https://changjoopark.medium.com/flutter-main-%EB%A9%94%EC%86%8C%EB%93%9C%EC%97%90%EC%84%9C-%EB%B9%84%EB%8F%99%EA%B8%B0-%EB%A9%94%EC%86%8C%EB%93%9C-%EC%82%AC%EC%9A%A9%EC%8B%9C-%EB%B0%98%EB%93%9C%EC%8B%9C-%EC%B6%94%EA%B0%80%ED%95%B4%EC%95%BC%ED%95%98%EB%8A%94-%ED%95%9C%EC%A4%84-728705061375 : [Flutter] main 메소드에서 비동기 메소드 사용시 반드시 추가해야하는 한줄
 
 https://funncy.github.io/flutter/2021/03/06/firestore/ : 
+
+https://velog.io/@oo0o_o0oo/Flutter-animation : Listener 
 
 
