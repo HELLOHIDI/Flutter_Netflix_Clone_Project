@@ -343,6 +343,9 @@ Widget _fetchData(BuildContext context) {
 
 
 <h2> 3. search_screen의 검색한 영화 출력 & like_screen의 찜한 영화 출력 </h2>
+search_screen에서 검색하고자 하는 영화의 텍스트와 같은 영화를 출력하고
+like_screen에서 찜하기를 한 영화를 출력함으로써 
+영화 데이터를 필터링을 해서 화면에 출력하였다.
 
 <h3> 3-1. search_screen.dart</h3>
 <pre>
