@@ -451,45 +451,36 @@ Widget _buildBody(BuildContext context) {
 </details>
 
 
+---------------------------------------------------------
 
-<h2> 5. detail_screen 뒷화면 블러처리효과 </h2>
-
-<pre>
-<code>
-
-</code>
-</pre>
-
-
-
+<h2>❓ 모르는 개념 정리</h2>
 <details>
- <summary> ❓ 모르는 개념 정리</summary>
- 
- #### 바인딩(binding) (1-1 中 ① WidgetsFlutterBinding.ensureInitialized() part)
+<summary> 🔍 자세히 알아보기! </summary>
+ #### 1. 바인딩(binding) (1-1 中 ① WidgetsFlutterBinding.ensureInitialized() part)
  : 프로그램에 사용된 구성 요소의 실제 값 또는 프로퍼티를 결정짓는 행위를 의미합니다. 예를 들어 함수를 호출하는 부분에서 실제 함수가 위치한 메모리를 연결
  
- #### FlutterFire CLI (1-1 中 ② Firebase.initializeApp() part)
+ #### 2. FlutterFire CLI (1-1 中 ② Firebase.initializeApp() part)
  : 지원되는 모든 플랫폼에서 FlutterFire 설치 프로세스를 쉽게 하는 데 도움이 되는 명령을 제공하는 유용한 도구
  
- #### CRUD 기능 (1-2 中 ② final DocumentReference reference part)
+ #### 3. CRUD 기능 (1-2 中 ② final DocumentReference reference part)
  : Create(생성), Read(읽기), Update(갱신), Delete(삭제)
 
 
- #### Collection, Document (2-1 中 ② late Stream<QuerySnapshot> streamData part)
+ #### 4. Collection, Document (2-1 中 ② late Stream<QuerySnapshot> streamData part)
  ![image](https://user-images.githubusercontent.com/54922625/152805013-ab9a2658-9a9f-411f-93dc-8c95466dc451.png)
  
      1. Collection 안에 여러 개의 Document가 있고 그 안에 Document를 채우는 field가 존재한다.
      2. 즉 Collection으로 부터 특정 Document들을 가져왔기에 하나씩 까봐야 한다. 
      => 이 말은 movie라는 큰 틀에서 가져왔기 때문에 각각의 문서들을 확인해봐야 한다는 맥락이 이렇게 이해되는 것이다.
  
- #### stream (2-1 中 ② late Stream<QuerySnapshot> streamData part)
+ #### 5. stream (2-1 中 ② late Stream<QuerySnapshot> streamData part)
      스트림은 데이터의 추가나 변경이 일어나면 이를 관찰하던데서 처리하는 방법
      => 비동기일 때 사용 (일단 이 정도 알고 넘어가고 추후 자세히 공부할 것)
 
- #### Query (2-1 中 ② late Stream<QuerySnapshot> streamData part)
+ #### 6. Query (2-1 中 ② late Stream<QuerySnapshot> streamData part)
  : 데이터베이스에게 특정한 데이터를 보여달라는 클라이언트의 요청
  
- #### Listener (3-1 中 ② _SearchScreenState() part)
+ #### 7. Listener (3-1 中 ② _SearchScreenState() part)
  
  리스너는 비동기 기능을 실행할 때 활용하는 기법으로
  어떤 이벤트가 발생했을 때 실행되는 함수를 리스너라고 부른다
@@ -497,18 +488,43 @@ Widget _buildBody(BuildContext context) {
  예를 들어 사용자가 탭을 바꾸면 TabController의 addListener함수가 호출된다. 
  이를 이용해 사용자가 탭을 바꾸면 값이나 상태를 갱신할 수 있다.
  
+ #### 8. <a href="https://api.flutter.dev/flutter/widgets/BackdropFilter-class.html">BackdropFilter class</a> (detail_screen.dart 中)
+ : 기존 페인팅된 콘텐츠에 필터를 적용한 다음 자식 을 페인팅하는 위젯
  </details>
 
 # 기술 스택 (Technique Used)
 
+<table>
+ <tr>
+  <td align='center'><img src='https://user-images.githubusercontent.com/40621030/136700782-179675b0-9bae-4ecf-b94a-e73073d24be5.png' height=80></a></td>
+  <td align='center'><img src='https://user-images.githubusercontent.com/19565940/137632602-01a7fc0f-00af-49af-bc96-8aee25b83a9d.png' height=80></a></td>
+  <td align='center'><img src='https://user-images.githubusercontent.com/19565940/137632657-bf613560-c27e-4dcf-b229-024230185e3b.png' height=80></td>
+  <td align='center'><img src='https://user-images.githubusercontent.com/54922625/153698020-b145fc66-8084-4ab1-827b-4c9e3249c2d0.png' height=80></td>
+  
+  
+ </tr>
+ <tr>
+  <td align='center'>Flutter</td>
+  <td align='center'>Libraries from pub.dev</td>
+  <td align='center'>Dart</td>
+  <td align='center'>Firebase</td>
+ </tr>
+</table>
+
 # 배운점
 - stream에 대해서 더욱 자세히 공부해보자
+- 나태해진 탓에 몇 달에 걸려서 고작 한개밖에 완성하지 못했다. 그래도 문서화까지 시키면서
+  완성을 시켜서 기분이 좋다! 이번 기회로 꾸준히 공부해야겠다.
+- firebase를 처음으로 사용해봤는데, firebase와 flutter을 같이 활용할 수 있는 프로젝트를
+  많이 시도해야겠다.
 
 # 참고 사이트
-https://changjoopark.medium.com/flutter-main-%EB%A9%94%EC%86%8C%EB%93%9C%EC%97%90%EC%84%9C-%EB%B9%84%EB%8F%99%EA%B8%B0-%EB%A9%94%EC%86%8C%EB%93%9C-%EC%82%AC%EC%9A%A9%EC%8B%9C-%EB%B0%98%EB%93%9C%EC%8B%9C-%EC%B6%94%EA%B0%80%ED%95%B4%EC%95%BC%ED%95%98%EB%8A%94-%ED%95%9C%EC%A4%84-728705061375 : [Flutter] main 메소드에서 비동기 메소드 사용시 반드시 추가해야하는 한줄
+- <a href="https://www.inflearn.com/course/flutter-netflix-clone-app/dashboard"> Flutter + Firebase로 넷플릭스 UI 클론 코딩하기 [무작정 플러터] 강의</a>
+- <a href="https://changjoopark.medium.com/flutter-main-%EB%A9%94%EC%86%8C%EB%93%9C%EC%97%90%EC%84%9C-%EB%B9%84%EB%8F%99%EA%B8%B0-%EB%A9%94%EC%86%8C%EB%93%9C-%EC%82%AC%EC%9A%A9%EC%8B%9C-%EB%B0%98%EB%93%9C%EC%8B%9C-%EC%B6%94%EA%B0%80%ED%95%B4%EC%95%BC%ED%95%98%EB%8A%94-%ED%95%9C%EC%A4%84-728705061375">[Flutter] main 메소드에서 비동기 메소드 사용시 반드시 추가해야하는 한줄</a> 
 
-https://funncy.github.io/flutter/2021/03/06/firestore/ : 
+ - <a href="https://funncy.github.io/flutter/2021/03/06/firestore"> Firebase FireStore 총정리</a>
+ 
+ - <a href="https://velog.io/@oo0o_o0oo/Flutter-animation"> Flutter Listener</a>
 
-https://velog.io/@oo0o_o0oo/Flutter-animation : Listener 
 
 
