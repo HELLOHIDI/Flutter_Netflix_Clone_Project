@@ -1,4 +1,5 @@
-# 넷플릭스 클론 코딩🎞
+# <a href="https://velog.io/@hello_hidi/Flutter-Netflix-clone-project">넷플릭스 클론 코딩🎞</a>
+
 
 # Screen
 <table>
